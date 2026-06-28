@@ -18,7 +18,18 @@ pub enum CacheError {
     SerializationError,
     /// Returned when the value is missing.
     MissingValue,
+    /// whenever encryption or decryption of cache results fails
+    EncryptionError,
+    /// Whenever compression of  the cache results fails
+    CompressionError,
+    /// Whenever base64 decoding failed
+    Base64DecodingOrEncodingError,
 }
+
+/// An alias type for handling the engine results.
+pub type CacheResult<T> = Result<T, CacheError>;
+
+impl std::error::Error for CacheError {}
 
 impl fmt::Display for CacheError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
@@ -43,8 +54,18 @@ impl fmt::Display for CacheError {
             CacheError::SerializationError => {
                 write!(f, "Unable to serialize, deserialize from the cache")
             }
+
+            CacheError::EncryptionError => {
+                write!(f, "Failed to encrypt or decrypt cache-results")
+            }
+
+            CacheError::CompressionError => {
+                write!(f, "failed to compress or uncompress cache results")
+            }
+
+            CacheError::Base64DecodingOrEncodingError => {
+                write!(f, "base64 encoding or decoding failed")
+            }
         }
     }
 }
-
-impl error_stack::Context for CacheError {}

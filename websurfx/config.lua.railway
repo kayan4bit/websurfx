@@ -1,0 +1,50 @@
+-- ### General ###
+logging = true -- an option to enable or disable logs.
+debug = false -- an option to enable or disable debug mode.
+threads = 4 -- the amount of threads that the app will use to run (the value should be greater than 0).
+
+-- ### Server ###
+port = "8080" -- port on which server should be launched (Railway default: 8080)
+binding_ip = "0.0.0.0" -- ip address on the which server should be launched (Railway requires 0.0.0.0)
+production_use = true -- whether to use production mode or not
+-- if production_use is set to true
+request_timeout = 30 -- timeout for the search requests sent to the upstream search engines to be fetched (value in seconds).
+tcp_connection_keep_alive = 30 -- the amount of time the tcp connection should remain alive to the upstream search engines (or connected to the server). (value in seconds).
+pool_idle_connection_timeout = 30 -- timeout for the idle connections in the reqwest HTTP connection pool (value in seconds).
+rate_limiter = {
+	number_of_requests = 20, -- The number of request that are allowed within a provided time limit.
+	time_limit = 3, -- The time limit in which the quantity of requests that should be accepted.
+}
+https_adaptive_window_size = true
+operating_system_tls_certificates = true -- Set whether the server will use operating system's tls certificates alongside rustls certificates while fetching search results from the upstream engines.
+number_of_https_connections = 10 -- the number of https connections that should be available in the connection pool.
+client_connection_keep_alive = 120
+
+-- ### Search ###
+safe_search = 2
+
+-- ### Website ###
+colorscheme = "catppuccin-mocha" -- the colorscheme name which should be used for the website theme
+theme = "simple" -- the theme name which should be used for the website
+animation = "simple-frosted-glow" -- the animation name which should be used with the theme or `nil` if you don't want any animations.
+
+-- ### Caching ###
+cache_expiry_time = 600 -- This option takes the expiry time of the search results (value in seconds and the value should be greater than or equal to 60 seconds).
+http_cache_expiry_time = 60 -- This option takes the expiry time of the http cache (value in seconds and the value should be greater than or equal to 60 seconds).
+
+-- ### Search Engines ###
+upstream_search_engines = {
+	DuckDuckGo = true,
+	Searx = false,
+	Brave = false,
+	Startpage = false,
+	LibreX = false,
+	Mojeek = false,
+	Bing = false,
+	Qwant = false,
+	Wikipedia = true,
+	Yahoo = false,
+	SepiaSearch = false,
+} -- select the upstream search engines from which the results should be fetched.
+
+proxy = nil -- Proxy to send outgoing requests through. Set to nil to disable.

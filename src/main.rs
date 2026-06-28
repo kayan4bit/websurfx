@@ -1,0 +1,59 @@
+//! Main module of the application
+//!
+//! This module contains the main function which handles the logging of the application to the
+//! stdout and handles the command line arguments provided and launches the `websurfx` server.
+#[cfg(not(feature = "dhat-heap"))]
+use mimalloc::MiMalloc;
+
+use tokio::net::TcpListener;
+use tokio::sync::OnceCell;
+use websurfx::{parser::Config, run};
+
+/// A dhat heap memory profiler
+#[cfg(feature = "dhat-heap")]
+#[global_allocator]
+static ALLOC: dhat::Alloc = dhat::Alloc;
+
+#[cfg(not(feature = "dhat-heap"))]
+#[global_allocator]
+static GLOBAL: MiMalloc = MiMalloc;
+
+/// A static constant for holding the parsed config.
+static CONFIG: OnceCell<Config> = OnceCell::const_new();
+
+/// The function that launches the main server and registers all the routes of the website.
+///
+/// # Error
+///
+/// Returns an error if the port is being used by something else on the system and is not
+/// available for being used for other applications.
+#[actix_web::main]
+async fn main() -> tokio::io::Result<()> {
+    // A dhat heap profiler initialization.
+    #[cfg(feature = "dhat-heap")]
+    let _profiler = dhat::Profiler::new_heap();
+
+    // Initialize the parsed config globally.
+    let config = CONFIG
+        .get_or_try_init(|| async move {
+            Config::parse(false)
+                .await
+                .map_err(|e| tokio::io::Error::other(e.to_string()))
+        })
+        .await?;
+
+    log::info!(
+        "started server on port {} and IP {}",
+        config.port,
+        config.binding_ip
+    );
+    log::info!(
+        "Open http://{}:{}/ in your browser",
+        config.binding_ip,
+        config.port,
+    );
+
+    let listener = TcpListener::bind((config.binding_ip.as_str(), config.port)).await?;
+
+    run(listener, config).await?.await
+}

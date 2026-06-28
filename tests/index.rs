@@ -1,49 +1,47 @@
-use std::net::TcpListener;
+//! This module provides the tests for each page whether they work as intended or not.
 
-use handlebars::Handlebars;
-use websurfx::{config::parser::Config, run};
+use tokio::{net::TcpListener, sync::OnceCell};
+use websurfx::{parser::Config, run, templates::views};
+
+/// A static constant for holding the parsed config.
+static CONFIG: OnceCell<Config> = OnceCell::const_new();
 
 // Starts a new instance of the HTTP server, bound to a random available port
-fn spawn_app() -> String {
+async fn spawn_app() -> String {
     // Binding to port 0 will trigger the OS to assign a port for us.
-    let listener = TcpListener::bind("127.0.0.1:0").expect("Failed to bind random port");
+    let listener = TcpListener::bind("127.0.0.1:0")
+        .await
+        .expect("Failed to bind random port");
     let port = listener.local_addr().unwrap().port();
-    let config = Config::parse(false).unwrap();
-    let server = run(
-        listener,
-        config,
-        #[cfg(all(feature = "memory-cache", not(feature = "redis-cache")))]
-        websurfx::cache::cacher::Cache::new_in_memory(),
-    )
-    .expect("Failed to bind address");
+    let config = CONFIG
+        .get_or_try_init(|| async move {
+            Config::parse(false)
+                .await
+                .map_err(|e| tokio::io::Error::new(tokio::io::ErrorKind::Other, e.to_string()))
+        })
+        .await
+        .unwrap();
+    let server = run(listener, config).await.expect("Failed to bind address");
 
     tokio::spawn(server);
     format!("http://127.0.0.1:{}/", port)
 }
 
-// Creates a new instance of Handlebars and registers the templates directory.
-// This is used to compare the rendered template with the response body.
-fn handlebars() -> Handlebars<'static> {
-    let mut handlebars = Handlebars::new();
-
-    handlebars
-        .register_templates_directory(".html", "./public/templates")
-        .unwrap();
-
-    handlebars
-}
-
 #[tokio::test]
 async fn test_index() {
-    let address = spawn_app();
+    let address = spawn_app().await;
 
     let client = reqwest::Client::new();
     let res = client.get(address).send().await.unwrap();
     assert_eq!(res.status(), 200);
 
-    let handlebars = handlebars();
-    let config = Config::parse(true).unwrap();
-    let template = handlebars.render("index", &config.style).unwrap();
+    let config = Config::parse(true).await.unwrap();
+    let template = views::index::index(
+        &config.style.colorscheme,
+        &config.style.theme,
+        &config.style.animation,
+    )
+    .0;
     assert_eq!(res.text().await.unwrap(), template);
 }
 

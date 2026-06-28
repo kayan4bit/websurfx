@@ -1,0 +1,73 @@
+# Dockerfile optimized for Railway deployment
+# Railway uses Ubuntu-based images, so we use debian for compatibility
+
+# Stage 1: Builder
+FROM --platform=$BUILDPLATFORM rust:1.94-bookworm AS builder
+
+WORKDIR /app
+
+# Install build dependencies
+RUN apt-get update && apt-get install -y \
+    pkg-config \
+    libssl-dev \
+    upx-ucl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy dependency files first for better caching
+COPY Cargo.toml Cargo.lock ./
+
+# Create dummy main.rs for dependency compilation
+RUN mkdir -p src && \
+    echo "fn main() {}" > src/main.rs
+
+# Build dependencies only
+RUN cargo build --release && rm -rf src
+
+# Copy actual source code
+COPY src ./src
+COPY public ./public
+
+# Build the application
+RUN cargo build --release
+
+# Compress binary with UPX
+RUN upx --lzma --best target/release/websurfx || true
+
+# Stage 2: Runtime
+FROM --platform=$BUILDPLATFORM debian:bookworm-slim
+
+# Install runtime dependencies
+RUN apt-get update && apt-get install -y \
+    ca-certificates \
+    libssl3 \
+    tini \
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get clean
+
+WORKDIR /app
+
+# Copy binary
+COPY --from=builder /app/target/release/websurfx /usr/local/bin/websurfx
+
+# Copy public assets
+COPY --from=builder /app/public /app/public
+
+# Create config directory
+RUN mkdir -p /etc/xdg/websurfx
+
+# Set environment variables for Railway
+ENV PORT=8080
+ENV BINDING_IP=0.0.0.0
+
+# Expose port (Railway uses PORT env variable)
+EXPOSE ${PORT}
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+    CMD wget --no-verbose --tries=1 --spider http://localhost:${PORT}/ || exit 1
+
+# Use tini as init system
+ENTRYPOINT ["/usr/bin/tini", "--"]
+
+# Run websurfx
+CMD ["websurfx"]

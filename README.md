@@ -4,10 +4,10 @@
 <p align="center">
   <b align="center"><a href="README.md">Readme</a></b> |
   <b><a href="https://discord.gg/SWnda7Mw5u">Discord</a></b> |
-  <b><a href="../../tree/HEAD/docs/instances.md">Instances</a></b> |
+  <b><a href="docs/instances.md">Instances</a></b> |
   <b><a href="https://discord.gg/VKCAememnr">User Showcase</a></b> |
   <b><a href="https://github.com/neon-mmd/websurfx">GitHub</a></b> |
-  <b><a href="../../tree/HEAD/docs/">Documentation</a></b>
+  <b><a href="docs">Documentation</a></b>
   <br /><br />
    <a
       href="https://github.com/awesome-selfhosted/awesome-selfhosted#search-engines"
@@ -32,7 +32,13 @@
   <a href=""
     ><img
       alt="Maintenance"
-      src="https://img.shields.io/maintenance/yes/2023?style=flat-square"
+      src="https://img.shields.io/maintenance/yes/2026?style=flat-square"
+    />
+  </a>
+  <a href="https://www.codefactor.io/repository/github/neon-mmd/websurfx">
+    <img
+      alt="CodeFactor"
+      src="https://www.codefactor.io/repository/github/neon-mmd/websurfx/badge"
     />
   </a>
   <a href="https://gitpod.io/#https://github.com/neon-mmd/websurfx">
@@ -61,7 +67,7 @@
 - **Getting Started**
   - [🔭 Preview](#preview-)
   - [🚀 Features](#features-)
-  - [🔗 Instances](instances-)
+  - [🔗 Instances](#instances-)
   - [🛠️ Installation and Testing](#installation-and-testing-%EF%B8%8F)
   - [🔧 Configuration](#configuration-)
 - **Feature Overview**
@@ -69,11 +75,11 @@
   - [🌍 Multi-Language Support](#multi-language-support-)
 - **Community**
   - [📊 System Requirements](#system-requirements-)
-  - [🗨️ FAQ (Frequently Asked Questions)](#faq-frequently-asked-questions-)
+  - [🗨️ FAQ (Frequently Asked Questions)](#faq-frequently-asked-questions-%EF%B8%8F)
   - [📣 More Contributors Wanted](#more-contributors-wanted-)
   - [💖 Supporting Websurfx](#supporting-websurfx-)
   - [📘 Documentation](#documentation-)
-  - [🛣️ Roadmap](#roadmap-)
+  - [🛣️ Roadmap](#roadmap-%EF%B8%8F)
   - [🙋 Contributing](#contributing-)
   - [📜 License](#license-)
   - [🤝 Credits](#credits-)
@@ -99,13 +105,20 @@
 
 # Instances 🔗
 
-> For a full list of publicly available community driven `websurfx` instances to test or for daily use. see [**Instances**](./docs/instances.md)
+> For a full list of publicly available community driven `websurfx` instances to test or for daily use. see [**Instances**](docs/instances.md)
 
 **[⬆️ Back to Top](#--)**
 
 # Features 🚀
 
-- 🎨 Make Websurfx uniquely yours with twelve color schemes provided by default. It also supports creation of custom themes and color schemes in a quick and easy way, so unleash your creativity!
+- 🎨 Make Websurfx uniquely yours with the twelve color schemes provided by default. It also supports the creation of custom themes and color schemes in a quick and easy way, so unleash your creativity!
+- 🚀 Easy to setup with Docker or on bare metal with various installation and deployment options.
+- ⛔ Search filtering to filter search results based on four different levels.
+- 💾 Different caching levels focusing on reliability, speed and resiliancy.
+- ⬆️  Organic Search results (with ranking algorithm builtin to rerank the search results according to user's search query.).
+- 🔒 Different compression and encryption levels focusing on speed and privacy.
+- 🧪 Experimental IO-uring feature for Linux operating systems focused on performance of the engine.
+- 🧅 Custom proxy and Tor support for fetching search results from the upstream search engines.
 - 🔐 Fast, private, and secure
 - 🆓 100% free and open source
 - 💨 Ad-free and clean results
@@ -115,7 +128,7 @@
 
 # Installation and Testing 🛠️
 
-> For full setup instructions, see: [**Installation**](./docs/installation.md)
+> For full setup instructions, see: [**Installation**](docs/installation.md)
 
 Before you can start building `websurfx`, you will need to have `Cargo` installed on your system. You can find the installation instructions [here](https://doc.rust-lang.org/cargo/getting-started/installation.html).
 
@@ -132,16 +145,16 @@ redis-server --port 8082 &
 
 Once you have started the server, open your preferred web browser and navigate to <http://127.0.0.1:8080> to start using Websurfx.
 
-> **Note**
+> [!Note]
 >
 > 1. The project is no longer in the testing phase and is now ready for production use.
-> 2. There are many features still missing like `support for image search`, `different categories`, `quick apps`, etc but they will be added soon as part of future releases.
+> 2. There are many features still missing, like `support for image search`, `different categories`, `quick apps`, etc., but they will be added soon as part of future releases.
 
 **[⬆️ Back to Top](#--)**
 
 # Configuration 🔧
 
-> For full configuration instructions, see: [**Configuration**](./docs/configuration.md)
+> For full configuration instructions, see: [**Configuration**](docs/configuration.md)
 
 Websurfx is configured through the config.lua file, located at `websurfx/config.lua`.
 
@@ -149,7 +162,7 @@ Websurfx is configured through the config.lua file, located at `websurfx/config.
 
 # Theming 🎨
 
-> For full theming and customization instructions, see: [**Theming**](./docs/theming.md)
+> For full theming and customization instructions, see: [**Theming**](docs/theming.md)
 
 Websurfx comes loaded with several themes and color schemes, which you can apply and edit through the config file. It also supports custom themes and color schemes using CSS, allowing you to make it truly yours.
 
@@ -157,8 +170,8 @@ Websurfx comes loaded with several themes and color schemes, which you can apply
 
 # Multi-Language Support 🌍
 
-> **Note**
-> Currently, we do not support other languages but we will start accepting contributions regarding language support in the future. We believe language should never be a barrier to entry.
+> [!Note]
+> Currently, we do not support other languages, but we will start accepting contributions regarding language support in the future. We believe language should never be a barrier to entry.
 
 **[⬆️ Back to Top](#--)**
 
@@ -172,7 +185,7 @@ At present, we only support x86_64 architecture systems, but we would love to ha
 
 ## Why Websurfx?
 
-The primary purpose of the Websurfx project is to create a fast, secure, and privacy-focused meta-search engine. There are numerous meta-search engines available, but not all guarantee the security of their search engine, which is critical for maintaining privacy. Memory flaws, for example, can expose private or sensitive information, which is understandably bad. There is also the added problem of spam, ads, and inorganic results which most engines don't have a fool-proof answer to. Until now. With Websurfx I finally put a full stop to this problem. Websurfx is based on Rust, which ensures memory safety and removes such issues. Many meta-search engines also lack important features like advanced picture search, required by graphic designers, content providers, and others. Websurfx improves the user experience by providing these and other features, such as proper NSFW blocking and Micro-apps or Quick Results (providing a calculator, currency exchanges, etc in the search results).
+The primary purpose of the Websurfx project is to create a fast, secure, and privacy-focused meta-search engine. There are numerous meta-search engines available, but not all guarantee the security of their search engines, which is critical for maintaining privacy. Memory flaws, for example, can expose private or sensitive information, which is understandably bad. There is also the added problem of spam, ads, and inorganic results, which most engines don't have a full-proof answer to. Until now. With Websurfx, I finally put a full stop to this problem. Websurfx is based on Rust, which ensures memory safety and removes such issues. Many meta-search engines also lack important features like advanced picture search, required by graphic designers, content providers, and others. Websurfx improves the user experience by providing these and other features, such as proper NSFW blocking and micro-apps or quick results (providing a calculator, currency exchanges, etc. in the search results).
 
 ## Why AGPLv3?
 
@@ -180,7 +193,7 @@ Websurfx is distributed under the **AGPLv3** license to keep the source code ope
 
 ## Why Rust?
 
-Websurfx is based on Rust due to its memory safety features, which prevents vulnerabilities and makes the codebase more secure. Rust is also faster than C++, contributing to Websurfx's speed and responsiveness. Finally, the Rust ownership and borrowing system enables secure concurrency and thread safety in the program.
+Websurfx is based on Rust due to its memory safety features, which prevent vulnerabilities and make the codebase more secure. Rust is also faster than C++, contributing to Websurfx's speed and responsiveness. Finally, the Rust ownership and borrowing system enables secure concurrency and thread safety in the program.
 
 **[⬆️ Back to Top](#--)**
 
@@ -192,16 +205,16 @@ We are looking for more willing contributors to help grow this project. For more
 
 # Supporting Websurfx 💖
 
-> For full details and other ways you can help out, see: [**Contributing**]()
+> For full details and other ways you can help out, see: [**Contributing**](CONTRIBUTING.md)
 
 If you use Websurfx and would like to contribute to its development, we're glad to have you on board! Contributions of any size or type are always welcome, and we will always acknowledge your efforts.
 
 Several areas that we need a bit of help with at the moment are:
 
 - **Better and more color schemes**: Help fix color schemes and add other famous color schemes.
-- **Improve evasion code for bot detection** - Help improve code related to evading IP blocking and emulating human behaviors located in everyone's engine file.
-- **Logo** - Help create a logo for the project and website.
-- **Docker Support** - Help write a Docker Compose file for the project.
+- **Improve evasion code for bot detection**: Help improve code related to evading IP blocking and emulating human behaviors located in everyone's engine file.
+- **Logo**: Help create a logo for the project and website.
+- **Docker Support**: Help write a Docker Compose file for the project.
 - Submit a PR to add a new feature, fix a bug, update the docs, add a theme, widget, or anything else.
 - Star Websurfx on GitHub.
 
@@ -209,8 +222,8 @@ Several areas that we need a bit of help with at the moment are:
 
 # Documentation 📘
 
-> **Note**
-> We welcome any contributions to the [documentation](../../tree/HEAD/docs/) as this will benefit everyone who uses this project.
+> [!Note]
+> We welcome any contributions to the [documentation](docs) as this will benefit everyone who uses this project.
 
 **[⬆️ Back to Top](#--)**
 
@@ -230,7 +243,7 @@ Check out this [video](https://youtu.be/FccdqCucVSI) by Mr. Nick on how to contr
 
 ## Developer
 
-If you are a developer, have a look at the [CONTRIBUTING.org](CONTRIBUTING.md) document for more information.
+If you are a developer, have a look at the [CONTRIBUTING.md](CONTRIBUTING.md) document for more information.
 
 **[⬆️ Back to Top](#--)**
 
@@ -258,7 +271,7 @@ We would like to thank the following people for their contributions and support:
 
 <p>
   <a href="https://github.com/neon-mmd/websurfx/stargazers">
-    <img src="https://reporoster.com/stars/dark/neon-mmd/websurfx" />
+    <img src="http://reporoster.com/stars/dark/neon-mmd/websurfx"/>
   </a>
 </p>
 

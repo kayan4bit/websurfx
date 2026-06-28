@@ -1,0 +1,210 @@
+//! This module provides the functionality to parse the lua config and convert the config options
+//! into rust readable form.
+
+use crate::handler::{FileType, file_path};
+
+use crate::models::parser::{AggregatorConfig, RateLimiter, Style};
+use log::LevelFilter;
+use mlua::Lua;
+use reqwest::Proxy;
+use std::{collections::HashMap, fs, thread::available_parallelism};
+
+/// A named struct which stores the parsed config file options.
+pub struct Config {
+    /// It stores the parsed port number option on which the server should launch.
+    pub port: u16,
+    /// It stores the parsed ip address option on which the server should launch
+    pub binding_ip: String,
+    /// It stores the theming options for the website.
+    pub style: Style,
+    #[cfg(feature = "redis-cache")]
+    /// It stores the redis connection url address on which the redis
+    /// client should connect.
+    pub redis_url: String,
+    #[cfg(any(feature = "redis-cache", feature = "memory-cache"))]
+    /// It stores the max TTL for search results in cache.
+    pub cache_expiry_time: u16,
+    /// It stores the option to whether enable or disable production use.
+    pub aggregator: AggregatorConfig,
+    /// It stores the option to whether enable or disable logs.
+    pub logging: bool,
+    /// It stores the option to whether enable or disable debug mode.
+    pub debug: bool,
+    /// It toggles whether to use adaptive HTTP windows
+    pub adaptive_window: bool,
+    /// It stores all the engine names that were enabled by the user.
+    pub upstream_search_engines: HashMap<String, bool>,
+    /// It stores the time (secs) which controls the server request timeout.
+    pub request_timeout: u8,
+    /// It stores the number of threads which controls the app will use to run.
+    pub threads: u8,
+    /// Set the keep-alive time for client connections to the HTTP server
+    pub client_connection_keep_alive: u8,
+    /// It stores configuration options for the ratelimiting middleware.
+    pub rate_limiter: RateLimiter,
+    /// It stores the level of safe search to be used for restricting content in the
+    /// search results.
+    pub safe_search: u8,
+    /// It stores the TCP connection keepalive duration in seconds.
+    pub tcp_connection_keep_alive: u8,
+    /// It stores the pool idle connection timeout in seconds.
+    pub pool_idle_connection_timeout: u8,
+    /// Url of the proxy to use for outgoing requests.
+    pub proxy: Option<Proxy>,
+    /// It stores the number of https connections to keep in the pool.
+    pub number_of_https_connections: u8,
+    /// It stores the operating system's TLS certificates for https requests.
+    pub operating_system_tls_certificates: bool,
+    /// It stores the http-caching's validity time that is how long the http cache will remain
+    /// valid for all the resources that was loaded on the page.
+    pub http_cache_expiry_time: u8,
+}
+
+impl Config {
+    /// A function which parses the config.lua file and puts all the parsed options in the newly
+    /// constructed Config struct and returns it.
+    ///
+    /// # Arguments
+    ///
+    /// * `logging_initialized` - It takes a boolean which ensures that the logging doesn't get
+    ///   initialized twice. Pass false if the logger has not yet been initialized.
+    ///
+    /// # Error
+    ///
+    /// Returns a lua parse error if parsing of the config.lua file fails or has a syntax error
+    /// or io error if the config.lua file doesn't exists otherwise it returns a newly constructed
+    /// Config struct with all the parsed config options from the parsed config file.
+    pub async fn parse(logging_initialized: bool) -> Result<Self, Box<dyn std::error::Error>> {
+        let lua = Lua::new();
+        let globals = lua.globals();
+
+        lua.load(&fs::read_to_string(file_path(FileType::Config).await?)?)
+            .exec_async()
+            .await?;
+
+        let parsed_threads: u8 = globals.get("threads")?;
+
+        let debug: bool = globals.get("debug")?;
+        let logging: bool = globals.get("logging")?;
+        let adaptive_window: bool = globals.get("adaptive_window")?;
+
+        if !logging_initialized {
+            set_logging_level(debug, logging);
+        }
+
+        let threads: u8 = if parsed_threads == 0 {
+            let total_num_of_threads: usize = available_parallelism()?.get() / 2;
+            log::error!(
+                "Config Error: The value of `threads` option should be a non zero positive integer"
+            );
+            log::error!("Falling back to using {} threads", total_num_of_threads);
+            total_num_of_threads as u8
+        } else {
+            parsed_threads
+        };
+
+        let rate_limiter: HashMap<String, u8> = globals.get("rate_limiter")?;
+
+        let parsed_safe_search: u8 = globals.get("safe_search")?;
+        let safe_search: u8 = if parsed_safe_search <= 4 {
+            parsed_safe_search
+        } else {
+            log::error!(
+                "Config Error: The value of `safe_search` option should be a non zero positive integer from 0 to 4."
+            );
+            log::error!("Falling back to using the value `1` for the option");
+            1
+        };
+
+        #[cfg(any(feature = "redis-cache", feature = "memory-cache"))]
+        let parsed_cet = globals.get("cache_expiry_time")?;
+        #[cfg(any(feature = "redis-cache", feature = "memory-cache"))]
+        let cache_expiry_time = if parsed_cet < 60 {
+            log::error!("Config Error: The value of `cache_expiry_time` must be greater than 60");
+            log::error!("Falling back to using the value `60` for the option");
+            60
+        } else {
+            parsed_cet
+        };
+
+        let proxy_opt: Option<String> = globals.get("proxy")?;
+        let proxy = proxy_opt.and_then(|proxy_str| {
+            Proxy::all(proxy_str)
+                .inspect_err(|err| {
+                    log::error!("Invalid proxy url, defaulting to no proxy: {}", err);
+                })
+                .ok()
+        });
+
+        let parsed_hcet = globals.get("http_cache_expiry_time")?;
+        let http_cache_expiry_time = if parsed_hcet < 60 {
+            log::error!("Config Error: The value of `http_cache_expiry_time` must be at least 60");
+            log::error!("Falling back to using the value `60` for the option");
+            60
+        } else {
+            parsed_hcet
+        };
+
+        Ok(Config {
+            operating_system_tls_certificates: globals.get("operating_system_tls_certificates")?,
+            port: globals.get("port")?,
+            binding_ip: globals.get("binding_ip")?,
+            style: Style::new(
+                globals.get("theme")?,
+                globals.get("colorscheme")?,
+                globals.get("animation")?,
+            ),
+            #[cfg(feature = "redis-cache")]
+            redis_url: globals.get("redis_url")?,
+            aggregator: AggregatorConfig {
+                random_delay: globals.get("production_use")?,
+            },
+            logging,
+            debug,
+            adaptive_window,
+            upstream_search_engines: globals.get("upstream_search_engines")?,
+            request_timeout: globals.get("request_timeout")?,
+            tcp_connection_keep_alive: globals.get("tcp_connection_keep_alive")?,
+            pool_idle_connection_timeout: globals.get("pool_idle_connection_timeout")?,
+            number_of_https_connections: globals.get("number_of_https_connections")?,
+            threads,
+            client_connection_keep_alive: globals.get("client_connection_keep_alive")?,
+            rate_limiter: RateLimiter {
+                number_of_requests: rate_limiter["number_of_requests"],
+                time_limit: rate_limiter["time_limit"],
+            },
+            safe_search,
+            #[cfg(any(feature = "redis-cache", feature = "memory-cache"))]
+            cache_expiry_time,
+            proxy,
+            http_cache_expiry_time,
+        })
+    }
+}
+
+/// a helper function that sets the proper logging level
+///
+/// # Arguments
+///
+/// * `debug` - It takes the option to whether enable or disable debug mode.
+/// * `logging` - It takes the option to whether enable or disable logs.
+fn set_logging_level(debug: bool, logging: bool) {
+    if let Ok(pkg_env_var) = std::env::var("PKG_ENV")
+        && pkg_env_var.to_lowercase() == "dev"
+    {
+        env_logger::Builder::new()
+            .filter(None, LevelFilter::Trace)
+            .init();
+        return;
+    }
+
+    // Initializing logging middleware with level set to default or info.
+    let log_level = match (debug, logging) {
+        (true, true) => LevelFilter::Debug,
+        (true, false) => LevelFilter::Debug,
+        (false, true) => LevelFilter::Info,
+        (false, false) => LevelFilter::Error,
+    };
+
+    env_logger::Builder::new().filter(None, log_level).init();
+}
