@@ -865,36 +865,574 @@ input:checked + .slider::before {
   }
 }
 
-@media screen and (width <=706px) {
-  .about-container article .logo-container svg {
-    width: clamp(200px, 290px, 815px);
+/* ===================== */
+/* Mobile Optimization   */
+/* ===================== */
+
+/* Tablet breakpoint */
+@media screen and (width <= 1024px) {
+  .search_bar input {
+    width: 40rem;
   }
 
-  .about-container article .text-block .text-block-title {
-    font-size: 33px;
+  .settings_container {
+    flex-direction: column;
+    width: 90dvw;
   }
 
-  .hero-text {
-    font-size: 22px;
+  .settings_container .sidebar {
+    width: 100%;
+    flex-direction: row;
+    overflow-x: auto;
+    gap: 1rem;
+    padding: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .settings_container .sidebar .btn {
+    padding: 1.2rem 1.5rem;
+    white-space: nowrap;
+    font-size: 1.4rem;
+  }
+
+  .settings_container .main_container {
+    width: 100%;
+    border-left: none;
+    border-top: 1.5px solid var(--color-three);
+    padding-left: 0;
+    padding-top: 2rem;
+  }
+
+  .results {
+    width: 95%;
+  }
+
+  .results_aggregated .result h1 a {
+    font-size: 1.5rem;
+  }
+
+  .results_aggregated .result p {
+    font-size: 1.3rem;
+    line-height: 2rem;
+  }
+}
+
+/* Mobile breakpoint - Large phones */
+@media screen and (width <= 768px) {
+  html {
+    font-size: 55%;
+  }
+
+  header {
+    padding: 1.5rem 2rem;
+  }
+
+  header h1 a {
+    font-size: 2rem;
+  }
+
+  header ul {
+    gap: 1.5rem;
+    font-size: 1.3rem;
+  }
+
+  footer {
+    padding: 1.2rem 1.5rem 3rem;
+  }
+
+  footer ul {
+    font-size: 1.2rem;
+    gap: 1.5rem;
+  }
+
+  .search-container {
+    gap: 3rem;
+  }
+
+  .search_bar {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .search_bar input {
+    width: 90vw;
+    max-width: 40rem;
+    padding: 2rem;
+    font-size: 1.6rem;
+  }
+
+  .search_bar button {
+    width: 90vw;
+    max-width: 40rem;
+    padding: 2rem;
+    height: auto;
+  }
+
+  .search-container svg {
+    width: 60vw;
+    max-width: 300px;
+  }
+
+  .results {
+    width: 95%;
+    gap: 0.5rem;
+  }
+
+  .results .search_bar {
+    flex-direction: row;
+    margin: 0.5rem 0;
+  }
+
+  .results .search_bar input {
+    width: 100%;
+    max-width: none;
+    padding: 1.5rem;
+    font-size: 1.5rem;
+  }
+
+  .results .search_bar button {
+    width: auto;
+    padding: 1.5rem 2rem;
+    flex-shrink: 0;
+  }
+
+  .search_area .search_options {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .search_area .search_options select {
+    width: 100%;
+    max-width: 20rem;
+  }
+
+  .results_aggregated .result {
+    margin-top: 0.8rem;
+    padding: 1.5rem;
+  }
+
+  .results_aggregated .result h1 a {
+    font-size: 1.4rem;
+    word-break: break-word;
+  }
+
+  .results_aggregated .result small {
+    font-size: 1.1rem;
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .results_aggregated .result p {
+    font-size: 1.2rem;
+    line-height: 1.8rem;
+  }
+
+  .results_aggregated .result .upstream_engines {
+    font-size: 1rem;
+    padding: 0.5rem;
+  }
+
+  .error_container {
+    flex-direction: column;
+    gap: 3rem;
+    padding: 2rem;
+  }
+
+  .error_container img {
+    width: 50%;
+    max-width: 200px;
+  }
+
+  .error_content {
+    text-align: center;
+  }
+
+  .error_content h1 {
+    font-size: 2.5rem;
+  }
+
+  .error_content h2 {
+    font-size: 1.8rem;
   }
 
   .about-container {
-    width: unset;
+    width: 95%;
+    margin: 5rem auto;
+    row-gap: 60px;
+  }
+
+  .about-container article h1 {
+    font-size: 3rem;
+  }
+
+  .about-container article .text-block {
+    padding: 50px 0;
+  }
+
+  .about-container article .text-block .text-block-title {
+    font-size: 36px;
+  }
+
+  .hero-text-container {
+    width: 100%;
+  }
+
+  .hero-text {
+    font-size: 24px;
   }
 
   .feature-list-title {
-    font-size: 33px;
+    font-size: 36px;
   }
 
   .features {
     grid-template-columns: 1fr;
-  }
-
-  .feature-list {
-    padding: 35px 0;
+    gap: 20px;
   }
 
   .feature-card {
-    border-radius: 0;
+    padding: 20px;
+    border-radius: 12px;
+  }
+
+  .feature-card-header h4 {
+    font-size: 24px;
+  }
+
+  .feature-card-body p {
+    font-size: 16px;
+  }
+
+  .settings_container {
+    width: 95dvw;
+    margin: 2rem 0;
+  }
+
+  .settings h1 {
+    font-size: 2rem;
+  }
+
+  .settings > h1 {
+    margin-bottom: 2rem;
+    margin-left: 1rem;
+  }
+
+  .settings hr {
+    margin-left: 1rem;
+  }
+
+  .settings_container .sidebar .btn {
+    padding: 1rem;
+    font-size: 1.2rem;
+  }
+
+  .settings_container button {
+    width: 100%;
+    padding: 1.2rem;
+  }
+
+  .settings_container .tab h3 {
+    font-size: 1.6rem;
+  }
+
+  .settings_container .tab .description {
+    font-size: 1.3rem;
+  }
+
+  .settings_container .user_interface select,
+  .settings_container .general select {
+    width: 100%;
+    max-width: 25rem;
+  }
+
+  .settings_container .general form input {
+    width: 100%;
+    max-width: 25rem;
+  }
+
+  .page_navigation {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    padding: 2rem;
+    font-size: 1.4rem;
+  }
+
+  .page_navigation a {
+    padding: 1rem 1.5rem;
+  }
+
+  .result_not_found img {
+    width: 25rem;
+  }
+
+  .results .result_disallowed img,
+  .results .result_filtered img,
+  .results .result_engine_not_selected img {
+    width: 20rem;
+  }
+}
+
+/* Mobile breakpoint - Small phones */
+@media screen and (width <= 480px) {
+  html {
+    font-size: 50%;
+  }
+
+  header {
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1rem;
+  }
+
+  header h1 {
+    margin-bottom: 0.5rem;
+  }
+
+  header h1 a {
+    font-size: 1.8rem;
+  }
+
+  header ul {
+    gap: 1rem;
+  }
+
+  footer {
+    padding: 1rem 1rem 2.5rem;
+  }
+
+  footer ul {
+    flex-direction: column;
+    gap: 0.8rem;
+    align-items: center;
+  }
+
+  footer div {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .search-container {
+    gap: 2rem;
+  }
+
+  .search-container svg {
+    width: 80vw;
+  }
+
+  .search_bar input {
+    padding: 1.5rem;
+    font-size: 1.5rem;
+  }
+
+  .search_bar button {
+    padding: 1.5rem;
+  }
+
+  .results {
+    width: 100%;
+  }
+
+  .results_aggregated .result {
+    padding: 1rem;
+  }
+
+  .results_aggregated .result h1 a {
+    font-size: 1.3rem;
+  }
+
+  .results_aggregated .result small {
+    font-size: 1rem;
+  }
+
+  .results_aggregated .result p {
+    font-size: 1.1rem;
+    line-height: 1.6rem;
+  }
+
+  .error_content h1 {
+    font-size: 2rem;
+  }
+
+  .error_content h2 {
+    font-size: 1.5rem;
+  }
+
+  .about-container article .text-block .text-block-title {
+    font-size: 28px;
+  }
+
+  .hero-text {
+    font-size: 18px;
+  }
+
+  .about-container {
+    margin: 3rem auto;
+    row-gap: 40px;
+  }
+
+  .feature-list-title {
+    font-size: 28px;
+  }
+
+  .feature-card {
+    padding: 15px;
+  }
+
+  .feature-card-header h4 {
+    font-size: 20px;
+  }
+
+  .feature-card-body p {
+    font-size: 14px;
+  }
+
+  .settings_container .sidebar {
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    padding: 0.5rem;
+  }
+
+  .settings_container .sidebar .btn {
+    padding: 0.8rem 1rem;
+    font-size: 1.1rem;
+  }
+
+  .result_not_found img {
+    width: 18rem;
+  }
+
+  .results .result_disallowed,
+  .results .result_filtered,
+  .results .result_engine_not_selected {
+    gap: 3rem;
+    margin: 0 1rem;
+  }
+
+  .results .result_disallowed img,
+  .results .result_filtered img,
+  .results .result_engine_not_selected img {
+    width: 15rem;
+  }
+}
+
+/* Landscape mode on mobile */
+@media screen and (max-height: 500px) and (orientation: landscape) {
+  .search-container {
+    gap: 1.5rem;
+  }
+
+  .search-container svg {
+    width: 30vh;
+    max-width: 200px;
+  }
+
+  .search_bar input {
+    padding: 1rem;
+  }
+
+  .search_bar button {
+    padding: 1rem 2rem;
+  }
+}
+
+/* Touch device optimizations */
+@media (hover: none) and (pointer: coarse) {
+  .search_bar input:focus,
+  .search_area .search_options select:focus {
+    outline: 2px solid var(--color-three);
+  }
+
+  .settings_container button:active {
+    filter: brightness(0.9);
+  }
+
+  .results_aggregated .result:active {
+    background-color: var(--color-one);
+  }
+}
+
+/* ===================== */
+/* Privacy Tab Styles    */
+/* ===================== */
+
+.settings_container .privacy .privacy_toggle {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin: 1rem 0 2rem;
+  padding: 1rem;
+  background-color: var(--color-one);
+  border-radius: 0.5rem;
+  transition: background-color 0.2s ease;
+}
+
+.settings_container .privacy .privacy_toggle:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.settings_container .privacy .privacy_toggle .toggle_label {
+  font-size: 1.5rem;
+  color: var(--foreground-color);
+  letter-spacing: 0.05rem;
+}
+
+.settings_container .privacy .privacy_toggle .switch {
+  flex-shrink: 0;
+}
+
+.settings_container .privacy .info_box {
+  background-color: var(--color-one);
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+  margin: 1rem 0 2rem;
+  border-left: 3px solid var(--color-three);
+}
+
+.settings_container .privacy .info_box p {
+  font-size: 1.3rem;
+  color: var(--foreground-color);
+  opacity: 0.9;
+  line-height: 1.6;
+}
+
+/* E2EE indicator */
+.e2ee-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background-color: var(--color-three);
+  color: var(--background-color);
+  border-radius: 100px;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.e2ee-indicator::before {
+  content: '🔒';
+}
+
+/* Mobile privacy styles */
+@media screen and (width <= 768px) {
+  .settings_container .privacy .privacy_toggle {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  
+  .settings_container .privacy .privacy_toggle .toggle_label {
+    font-size: 1.3rem;
+  }
+  
+  .settings_container .privacy .info_box {
+    padding: 1rem;
+  }
+  
+  .settings_container .privacy .info_box p {
+    font-size: 1.2rem;
   }
 }

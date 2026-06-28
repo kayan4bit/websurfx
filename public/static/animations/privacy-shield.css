@@ -1,0 +1,19 @@
+/* Privacy Shield Animation */
+/* Subtle glow effect on hover to indicate secure interaction */
+
+.results_aggregated .result {
+  transition: all 0.3s ease-in-out;
+}
+
+.results_aggregated .result:hover {
+  box-shadow: 0 0 15px rgba(63, 185, 80, 0.3);
+  transform: translateX(5px);
+}
+
+.search_bar input:focus {
+  box-shadow: 0 0 10px rgba(88, 166, 255, 0.4);
+}
+
+.settings_container button:hover {
+  box-shadow: 0 0 15px rgba(63, 185, 80, 0.4);
+}

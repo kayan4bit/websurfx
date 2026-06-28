@@ -8,7 +8,8 @@ use crate::templates::partials::{
     footer::footer,
     header::header,
     settings_tabs::{
-        cookies::cookies, engines::engines, general::general, user_interface::user_interface,
+        cookies::cookies, engines::engines, general::general, privacy::privacy,
+        user_interface::user_interface,
     },
 };
 
@@ -42,12 +43,14 @@ pub async fn settings(
               .sidebar{
                   div class="btn active" onclick="setActiveTab(this)"{"general"}
                   .btn onclick="setActiveTab(this)"{"user interface"}
+                  .btn onclick="setActiveTab(this)"{"privacy"}
                   .btn onclick="setActiveTab(this)"{"engines"}
                   .btn onclick="setActiveTab(this)"{"cookies"}
               }
               .main_container{
                   (general(safe_search_level))
                   (user_interface(theme, colorscheme, animation).await?)
+                  (privacy())
                   (engines(engine_names))
                   (cookies())
                   p class="message"{}
@@ -57,6 +60,7 @@ pub async fn settings(
         }
         script src="static/settings.js"{}
         script src="static/cookies.js"{}
+        script src="static/privacy.js"{}
         (footer())
     ))
 }
