@@ -75,6 +75,11 @@ cache_expiry_time = 600 -- This option takes the expiry time of the search resul
 http_cache_expiry_time = 60 -- This option takes the expiry time of the http cache (value in seconds and the value should be greater than or equal to 60 seconds).
 
 -- ### Search Engines ###
+-- Available search engines:
+-- {{
+-- DuckDuckGo, Searx, Brave, Startpage, LibreX, Mojeek, Bing, Qwant, Wikipedia, Yahoo, SepiaSearch
+-- Google, Ecosia, SearchEngineAI, PageSearch, You, Swisscows, Yacy, Marginal, RightDAO
+-- }}
 upstream_search_engines = {
 	DuckDuckGo = true,
 	Searx = false,
@@ -87,6 +92,15 @@ upstream_search_engines = {
 	Wikipedia = true,
 	Yahoo = false,
 	SepiaSearch = false,
+	Google = false,
+	Ecosia = false,
+	SearchEngineAI = false,
+	PageSearch = false,
+	You = false,
+	Swisscows = false,
+	Yacy = false,
+	Marginal = false,
+	RightDAO = false,
 } -- select the upstream search engines from which the results should be fetched.
 
 proxy = nil -- Proxy to send outgoing requests through. Set to nil to disable.

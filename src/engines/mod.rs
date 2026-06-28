@@ -6,14 +6,23 @@
 pub mod bing;
 pub mod brave;
 pub mod duckduckgo;
+pub mod ecosia;
+pub mod google;
 pub mod librex;
+pub mod marginal;
 pub mod mojeek;
+pub mod pagesearch;
 pub mod qwant;
+pub mod rightdao;
 mod search_result_parser;
+pub mod search_engineai;
 pub mod searx;
 pub mod sepiasearch;
 pub mod startpage;
+pub mod swisscows;
 pub mod wikipedia;
+pub mod yacy;
+pub mod you;
 pub mod yahoo;
 
 /// Build a query from a list of key value pairs.

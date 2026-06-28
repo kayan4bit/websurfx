@@ -1,73 +1,69 @@
 # Dockerfile optimized for Railway deployment
-# Railway uses Ubuntu-based images, so we use debian for compatibility
+# Multi-stage build for minimal image size
 
 # Stage 1: Builder
-FROM --platform=$BUILDPLATFORM rust:1.94-bookworm AS builder
+FROM --platform=$BUILDPLATFORM rust:1.94-alpine AS builder
 
 WORKDIR /app
 
-# Install build dependencies
-RUN apt-get update && apt-get install -y \
-    pkg-config \
-    libssl-dev \
-    upx-ucl \
-    && rm -rf /var/lib/apt/lists/*
+# Install build dependencies (Alpine packages)
+RUN apk add --no-cache \
+    musl-dev \
+    gcc \
+    make \
+    libressl-dev \
+    pkgconfig \
+    upx \
+    perl
 
 # Copy dependency files first for better caching
 COPY Cargo.toml Cargo.lock ./
 
-# Create dummy main.rs for dependency compilation
-RUN mkdir -p src && \
-    echo "fn main() {}" > src/main.rs
-
-# Build dependencies only
-RUN cargo build --release && rm -rf src
-
-# Copy actual source code
+# Copy source code
 COPY src ./src
 COPY public ./public
+COPY build.rs ./build.rs
 
-# Build the application
-RUN cargo build --release
+# Build the application for musl target
+RUN rustup target add x86_64-unknown-linux-musl && \
+    cargo build --release --target x86_64-unknown-linux-musl
 
 # Compress binary with UPX
-RUN upx --lzma --best target/release/websurfx || true
+RUN upx --lzma --best target/x86_64-unknown-linux-musl/release/websurfx || true
 
-# Stage 2: Runtime
-FROM --platform=$BUILDPLATFORM debian:bookworm-slim
+# Copy binary
+RUN cp target/x86_64-unknown-linux-musl/release/websurfx /app/websurfx
 
-# Install runtime dependencies
-RUN apt-get update && apt-get install -y \
-    ca-certificates \
-    libssl3 \
-    tini \
-    && rm -rf /var/lib/apt/lists/* \
-    && apt-get clean
+# Stage 2: Runtime (Minimal image)
+FROM --platform=$BUILDPLATFORM alpine:3.19
 
 WORKDIR /app
 
-# Copy binary
-COPY --from=builder /app/target/release/websurfx /usr/local/bin/websurfx
+# Install runtime dependencies
+RUN apk add --no-cache ca-certificates libssl3
+
+# Copy binary from builder
+COPY --from=builder /app/websurfx /usr/local/bin/websurfx
 
 # Copy public assets
 COPY --from=builder /app/public /app/public
 
-# Create config directory
-RUN mkdir -p /etc/xdg/websurfx
+# Create websurfx config directory and copy default config
+RUN mkdir -p /etc/xdg/websurfx && \
+    mkdir -p /opt/websurfx
+
+# Copy websurfx folder with default config
+COPY websurfx/ /etc/xdg/websurfx/
+
+# Copy public to standard location
+COPY --from=builder /app/public /opt/websurfx/public/
 
 # Set environment variables for Railway
 ENV PORT=8080
 ENV BINDING_IP=0.0.0.0
 
-# Expose port (Railway uses PORT env variable)
+# Expose port
 EXPOSE ${PORT}
-
-# Health check
-HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-    CMD wget --no-verbose --tries=1 --spider http://localhost:${PORT}/ || exit 1
-
-# Use tini as init system
-ENTRYPOINT ["/usr/bin/tini", "--"]
 
 # Run websurfx
 CMD ["websurfx"]
