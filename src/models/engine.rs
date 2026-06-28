@@ -225,6 +225,43 @@ impl EngineHandler {
                     let engine = crate::engines::sepiasearch::SepiaSearch::new()?;
                     ("sepiasearch", Box::new(engine))
                 }
+                // New search engines
+                "google" => {
+                    let engine = crate::engines::google::Google::new()?;
+                    ("google", Box::new(engine))
+                }
+                "ecosia" => {
+                    let engine = crate::engines::ecosia::Ecosia::new()?;
+                    ("ecosia", Box::new(engine))
+                }
+                "searchengineai" => {
+                    let engine = crate::engines::search_engineai::SearchEngineAI::new()?;
+                    ("searchengineai", Box::new(engine))
+                }
+                "pagesearch" => {
+                    let engine = crate::engines::pagesearch::PageSearch::new()?;
+                    ("pagesearch", Box::new(engine))
+                }
+                "you" => {
+                    let engine = crate::engines::you::You::new()?;
+                    ("you", Box::new(engine))
+                }
+                "swisscows" => {
+                    let engine = crate::engines::swisscows::Swisscows::new()?;
+                    ("swisscows", Box::new(engine))
+                }
+                "yacy" => {
+                    let engine = crate::engines::yacy::Yacy::new()?;
+                    ("yacy", Box::new(engine))
+                }
+                "marginal" => {
+                    let engine = crate::engines::marginal::Marginal::new()?;
+                    ("marginal", Box::new(engine))
+                }
+                "rightdao" => {
+                    let engine = crate::engines::rightdao::RightDAO::new()?;
+                    ("rightdao", Box::new(engine))
+                }
                 _ => {
                     return Err(Report::from(EngineError::NoSuchEngineFound(
                         engine_name.to_string(),
